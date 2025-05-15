@@ -61,7 +61,11 @@ for clave, activo in activos.items():
     modelo, etiquetas = cargar_modelo_y_etiquetas(clave)
     if modelo:
         score_medio = score_map[clave]
-        sentimiento_dominante = max(set([n["sentimiento"] for n in noticias_filtradas]), key=[n["sentimiento"] for n in noticias_filtradas].count)
+        if noticias_filtradas:
+            sentimientos = [n["sentimiento"] for n in noticias_filtradas]
+            sentimiento_dominante = max(set(sentimientos), key=sentimientos.count)
+        else:
+            sentimiento_dominante = "neutro"
         prediccion = predecir_senal(modelo, etiquetas, score_medio, sentimiento_dominante)
         prediccion_map[clave] = prediccion
     else:
