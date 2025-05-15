@@ -9,7 +9,10 @@ venv/
 env/
 
 # Data folders
-data/
+# Ignorar todo lo de data excepto modelos
+data/*
+!data/modelos/
+!data/modelos/*.pkl
 *.csv
 
 # API keys or sensitive files
