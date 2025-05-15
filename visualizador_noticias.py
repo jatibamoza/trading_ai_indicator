@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
 import yfinance as yf
@@ -13,8 +13,13 @@ from src.senales import generar_senal, calcular_score_sentimiento
 from config import NOTICIAS_DIR
 
 st.set_page_config(layout="wide")
-st.title("🧠 Análisis de Sentimiento y Precios Intradía")
+st.title("Análisis de Sentimiento y Precios Intradía")
 st.write("Visualización de noticias relevantes y su impacto en activos financieros.")
+
+# --- Selección de intervalo e historial ---
+intervalo = st.sidebar.selectbox("Intervalo de precios", ["1h", "4h", "1d", "1mo"])
+fecha_inicio = st.sidebar.date_input("Desde", datetime(2024, 11, 1))
+fecha_fin = st.sidebar.date_input("Hasta", datetime.today())
 
 # --- Obtener y analizar noticias ---
 noticias_newsapi = obtener_noticias()
@@ -50,7 +55,12 @@ senal_map = {}
 score_map = {}
 
 for clave, activo in activos.items():
-    df = yf.download(activo["ticker"], period="5d", interval="15m")
+    df = yf.download(
+        activo["ticker"],
+        start=fecha_inicio,
+        end=fecha_fin,
+        interval=intervalo
+    )
     df.index = pd.to_datetime(df.index)
     precios_map[clave] = df
     noticias_filtradas = [n for n in noticias if n["activo"] == clave]
@@ -69,21 +79,18 @@ fecha = datetime.now().strftime("%Y%m%d_%H%M")
 df_final.to_csv(f"{NOTICIAS_DIR}/noticias_procesadas_{fecha}.csv", index=False)
 
 # --- Mostrar interfaz Streamlit ---
-tabs = st.tabs(["🟡 Oro", "💶 EUR/USD", "📈 IBEX 35"])
+tabs = st.tabs(["Oro", "EUR/USD", "IBEX 35"])
 
 for i, clave in enumerate(activos.keys()):
     activo = activos[clave]
     with tabs[i]:
-        st.subheader(f"📊 Precio de {activo['nombre']} vs Noticias")
+        st.subheader(f"Precio de {activo['nombre']} vs Noticias")
 
         df_precios = precios_map[clave]
         noticias_filtradas = [n for n in noticias if n["activo"] == clave]
 
-        if noticias_filtradas:
-            # Modificar título del eje Y dinámicamente
-            for n in noticias_filtradas:
-                n["unidad"] = activo["unidad"]
-
+        if noticias_filtradas and not df_precios.empty:
+            # Mostrar gráfico
             fig = visualizar_precio_vs_noticias(df_precios, noticias_filtradas, activo["nombre"], activo["unidad"])
             st.plotly_chart(fig, use_container_width=True)
 
@@ -99,12 +106,12 @@ for i, clave in enumerate(activos.keys()):
                 ultimo_precio = float(df_precios["Close"].iloc[-1])
                 precio_pasado = float(df_precios["Close"].iloc[-6])
                 variacion = ((ultimo_precio - precio_pasado) / precio_pasado) * 100
-                st.markdown(f"📍 Señal de trading actual: **:blue[{senal}]**")
-                st.markdown(f"🧠 Sentimiento promedio: **{score_promedio:.2f}**")
-                st.markdown(f"📉 Variación de precio reciente: **{variacion:.2f}%**")
+                st.markdown(f"Señal de trading actual: **{senal}**")
+                st.markdown(f"Sentimiento promedio: **{score_promedio:.2f}**")
+                st.markdown(f"Variación de precio reciente: **{variacion:.2f}%**")
             except Exception:
                 st.warning("No se pudo calcular la variación de precio.")
 
-            st.markdown(f"🔍 Noticias analizadas: **{len(noticias_filtradas)}**")
+            st.markdown(f"Noticias analizadas: **{len(noticias_filtradas)}**")
         else:
-            st.info(f"No hay noticias relevantes para '{activo['nombre']}' en este momento.")
+            st.info(f"No hay suficientes datos para mostrar el análisis de '{activo['nombre']}'.")
