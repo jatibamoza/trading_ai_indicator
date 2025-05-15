@@ -1,79 +1,106 @@
 
-# 📈 trading_ai_indicator
+# 📈 Proyecto: Predicción de Señales de Trading con IA + Sentimiento
 
-**Indicador de trading intradía con inteligencia artificial** para activos como **oro (Gold), EUR/USD e IBEX 35**, integrando análisis de precios y noticias geopolíticas y económicas en tiempo real.
+Este proyecto utiliza **noticias económicas** y su **análisis de sentimiento** para predecir señales de trading (BUY / SELL / HOLD) para tres activos clave:
 
----
-
-## 🚀 Funcionalidades (fase actual)
-- ✅ Descarga de precios intradía cada 15 minutos desde Yahoo Finance (`yfinance`)
-- ✅ Recolección de noticias relevantes vía `NewsAPI`
-- 🔄 Guardado automático en CSV para histórico y backtesting
-- 🧠 Preparado para integración de IA (análisis de sentimiento y predicción)
+- **Oro (`GC=F`)**
+- **EUR/USD (`EURUSD=X`)**
+- **IBEX 35 (`^IBEX`)**
 
 ---
 
-## 📁 Estructura del proyecto
+## 🧠 ¿Qué hace?
 
-```
-trading_ai_indicator/
-├── main.py
-├── config.py
-├── requirements.txt
-├── data/
-│   ├── precios/
-│   └── noticias/
-├── src/
-│   ├── precios.py
-│   ├── noticias.py
-│   └── ...
-```
+1. Descarga noticias recientes desde NewsAPI + Investing.com
+2. Analiza el sentimiento con `TextBlob` (`positivo`, `negativo`, `neutro`)
+3. Asocia noticias a activos específicos
+4. Obtiene precios históricos con `yfinance`
+5. Entrena modelos de Machine Learning (Random Forest) por activo
+6. Usa los modelos entrenados para predecir señales de trading en tiempo real
+7. Muestra gráficos y métricas en un dashboard con Streamlit
 
 ---
 
-## ⚙️ Requisitos
+## 🚀 Cómo usar
+
+### 1. Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Asegúrate de tener una API Key de [https://newsapi.org](https://newsapi.org) y agregarla en `config.py`.
+### 2. Configura tu API key en `config.py`
 
----
-
-## ▶️ Ejecución
-
-```bash
-python main.py
+```python
+NEWSAPI_KEY = "TU_CLAVE_AQUI"
 ```
 
-Esto descargará:
-- Datos intradía de Oro, EUR/USD e IBEX 35 (últimos 30 días)
-- Noticias recientes relacionadas con dichos activos
-
----
-
-## 🧠 Próximas funcionalidades
-
-- Análisis de sentimiento en titulares (NLP con spaCy/NLTK)
-- Modelo de predicción basado en ML (Random Forest / LSTM)
-- Generador de señales de compra/venta
-- Dashboard visual con Streamlit
-
----
-
-## 🔐 Notas de seguridad
-
-Agrega un archivo `.env` si deseas ocultar tu API Key:
+### 3. Descargar noticias históricas (últimos 30 días)
 
 ```bash
-NEWSAPI_KEY=tu_clave
+python noticias_historicas.py
 ```
 
-Y carga con `python-dotenv`.
+### 4. Combinar en un solo archivo
+
+```bash
+python combinar_csv_historicos.py
+```
+
+### 5. Procesar noticias y entrenar el modelo
+
+```bash
+python modelo.py
+```
+
+Esto guardará los modelos `.pkl` en `data/modelos/`.
 
 ---
 
-## 📄 Licencia
+### 6. Ejecutar la app en Streamlit
 
-MIT © 2025 - Javier Tibamoza
+```bash
+streamlit run visualizador_noticias.py
+```
+
+---
+
+## 🧩 Estructura del proyecto
+
+```
+src/
+├── noticias.py              # Obtener noticias actuales
+├── scraper_investing.py    # Scraper básico para Investing.com
+├── procesamiento.py        # Análisis de sentimiento
+├── senales.py              # Métricas heurísticas
+├── modelo_predictor.py     # Predicción en tiempo real con modelos .pkl
+├── visualizacion.py        # Generar gráficos con Plotly
+config.py                   # API keys y rutas
+visualizador_noticias.py    # Interfaz principal Streamlit
+modelo.py                   # Entrenamiento de modelos IA
+noticias_historicas.py      # Obtener noticias antiguas de NewsAPI
+combinar_csv_historicos.py  # Combinar noticias por día en un CSV único
+```
+
+---
+
+## 📌 Requisitos
+
+- Python 3.8+
+- Clave válida de [newsapi.org](https://newsapi.org/)
+- Cuenta en [Streamlit Cloud](https://streamlit.io/cloud) (opcional para desplegar online)
+
+---
+
+## ✅ Roadmap (siguientes pasos)
+
+- Añadir scraping histórico completo desde Investing
+- Entrenar con noticias traducidas multilingües
+- Exportar señales como API REST o alertas por email
+- Entrenar modelos más avanzados (XGBoost, LSTM...)
+
+---
+
+## 📬 Autor
+
+Desarrollado por Javier Tibamoza con integración de análisis financiero y técnicas de IA.
