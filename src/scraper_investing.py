@@ -8,7 +8,8 @@ def obtener_titulares_investing(url="https://www.investing.com/news/stock-market
         "User-Agent": "Mozilla/5.0"
     }
     r = requests.get(url, headers=headers)
-    soup = BeautifulSoup(r.content, "lxml")
+    #soup = BeautifulSoup(r.content, "lxml")
+    soup = BeautifulSoup(r.content, "html.parser")
 
     articulos = soup.find_all("article", class_="js-article-item")
     noticias = []

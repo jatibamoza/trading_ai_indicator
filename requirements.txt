@@ -13,3 +13,5 @@ seaborn
 streamlit
 # Machine Learning
 scikit-learn
+
+lxml
