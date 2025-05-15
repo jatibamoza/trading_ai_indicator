@@ -1,6 +1,7 @@
 
 import pandas as pd
 import plotly.graph_objects as go
+import numpy as np
 
 def visualizar_precio_vs_noticias(df_precios, noticias, nombre_activo="Activo", unidad="USD"):
     fig = go.Figure()
@@ -25,7 +26,9 @@ def visualizar_precio_vs_noticias(df_precios, noticias, nombre_activo="Activo", 
 
         # Buscar precio más cercano
         if not df_precios.empty:
-            precio_cercano = df_precios.iloc[(df_precios.index - fecha).abs().argsort()[:1]]['Close'].values[0]
+            tiempos = np.abs((df_precios.index - fecha).total_seconds())
+            indice_mas_cercano = tiempos.argmin()
+            precio_cercano = df_precios["Close"].iloc[indice_mas_cercano]
 
             fig.add_trace(go.Scatter(
                 x=[fecha],
