@@ -1,4 +1,23 @@
-.env
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Data folders
 data/
+*.csv
+
+# API keys or sensitive files
+.env
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+Thumbs.db
