@@ -91,14 +91,17 @@ for i, clave in enumerate(activos.keys()):
             # Mostrar señal con explicación
             senal = senal_map[clave]
             score_promedio = score_map[clave]
-            #variacion = (df_precios["Close"].iloc[-1] - df_precios["Close"].iloc[-6]) / df_precios["Close"].iloc[-6] * 100
-            ultimo_precio = df_precios["Close"].iloc[-1]
-            precio_pasado = df_precios["Close"].iloc[-6]
-            variacion = ((ultimo_precio - precio_pasado) / precio_pasado) * 100
-            st.markdown(f"📍 Señal de trading actual: **:blue[{senal}]**")
-            st.markdown(f"🧠 Sentimiento promedio: **{score_promedio:.2f}**")
-            st.markdown(f"📉 Variación de precio reciente: **{variacion:.2f}%**")
-            st.markdown(f"🔍 Noticias analizadas: **{len(noticias_filtradas)}**")
 
+            try:
+                ultimo_precio = float(df_precios["Close"].iloc[-1])
+                precio_pasado = float(df_precios["Close"].iloc[-6])
+                variacion = ((ultimo_precio - precio_pasado) / precio_pasado) * 100
+                st.markdown(f"📍 Señal de trading actual: **:blue[{senal}]**")
+                st.markdown(f"🧠 Sentimiento promedio: **{score_promedio:.2f}**")
+                st.markdown(f"📉 Variación de precio reciente: **{variacion:.2f}%**")
+            except Exception as e:
+                st.warning("No se pudo calcular la variación de precio.")
+
+            st.markdown(f"🔍 Noticias analizadas: **{len(noticias_filtradas)}**")
         else:
             st.info(f"No hay noticias relevantes para '{activo['nombre']}' en este momento.")
