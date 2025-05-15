@@ -6,9 +6,9 @@ TICKERS = {
     "ibex35": "^IBEX"
 }
 
-NEWSAPI_KEY = "TU_API_KEY_AQUI"  # Reemplázala o usa dotenv para cargar desde .env
+NEWSAPI_KEY = "bf7c167d66ca4eef93579061bf4a98f0"  # Reemplázala o usa dotenv para cargar desde .env
 
-NOTICIAS_QUERY = "gold OR EUR/USD OR IBEX"
+NOTICIAS_QUERY = "gold OR euro OR ECB OR dollar OR Spain OR IBEX OR Bolsa OR Banco Central" #gold OR EUR/USD OR IBEX
 NOTICIAS_LENGUAJE = "en"
 
 DATA_DIR = "data"

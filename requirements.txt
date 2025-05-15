@@ -1,3 +1,15 @@
+# requirements.txt
+# Finanzas y datos
 yfinance
-newsapi-python
 pandas
+numpy
+# Noticias y análisis de texto
+newsapi-python
+textblob
+# Visualización
+plotly
+matplotlib
+seaborn
+streamlit
+# Machine Learning
+scikit-learn
