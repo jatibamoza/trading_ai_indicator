@@ -40,9 +40,9 @@ for noticia in noticias:
 
 # --- Descargar precios por activo ---
 activos = {
-    "oro": {"nombre": "Oro", "ticker": "GC=F"},
-    "eurusd": {"nombre": "EUR/USD", "ticker": "EURUSD=X"},
-    "ibex35": {"nombre": "IBEX 35", "ticker": "^IBEX"}
+    "oro": {"nombre": "Oro", "ticker": "GC=F", "unidad": "USD"},
+    "eurusd": {"nombre": "EUR/USD", "ticker": "EURUSD=X", "unidad": "USD"},
+    "ibex35": {"nombre": "IBEX 35", "ticker": "^IBEX", "unidad": "Puntos"}
 }
 
 precios_map = {}
@@ -80,8 +80,11 @@ for i, clave in enumerate(activos.keys()):
         noticias_filtradas = [n for n in noticias if n["activo"] == clave]
 
         if noticias_filtradas:
-            # Mostrar gráfico
-            fig = visualizar_precio_vs_noticias(df_precios, noticias_filtradas)
+            # Modificar título del eje Y dinámicamente
+            for n in noticias_filtradas:
+                n["unidad"] = activo["unidad"]
+
+            fig = visualizar_precio_vs_noticias(df_precios, noticias_filtradas, activo["nombre"], activo["unidad"])
             st.plotly_chart(fig, use_container_width=True)
 
             # Mostrar tabla de noticias
@@ -99,7 +102,7 @@ for i, clave in enumerate(activos.keys()):
                 st.markdown(f"📍 Señal de trading actual: **:blue[{senal}]**")
                 st.markdown(f"🧠 Sentimiento promedio: **{score_promedio:.2f}**")
                 st.markdown(f"📉 Variación de precio reciente: **{variacion:.2f}%**")
-            except Exception as e:
+            except Exception:
                 st.warning("No se pudo calcular la variación de precio.")
 
             st.markdown(f"🔍 Noticias analizadas: **{len(noticias_filtradas)}**")
